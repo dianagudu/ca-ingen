@@ -1,0 +1,8 @@
+cloud_traces
+.ipynb_checkpoints
+*.ipynb
+env
+**/**/*.pyc
+.vscode
+notes.txt
+.env
