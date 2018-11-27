@@ -1,4 +1,7 @@
+import numpy as np
+
 from ingen.model import Model
+from ingen.binning import BinningGenerator
 
 from .bidset import BidSetGenerator
 
@@ -28,18 +31,46 @@ class AuctionSetGenerator():
 
     def __init__(self, params):
         self.__params = params
-        self.__b_model = Model.from_file(params.b_model_file)
-        self.__a_model = Model.from_file(params.a_model_file)
-        #create binning from binning types
+
+        # load models from files
+        self.__b_model = Model.from_file(params.bids.model_file)
+        self.__a_model = Model.from_file(params.asks.model_file)
+
+        # create binnings from binning types
+        self.__b_binning = BinningGenerator.generate(
+            params.bids.binning_type,
+            params.bids.binning_counts,
+            self.__b_model.binning.domain)
+        self.__a_binning = BinningGenerator.generate(
+            params.asks.binning_type,
+            params.asks.binning_counts,
+            self.__a_model.binning.domain)
+
+        # create base prices and spreads
+        # https://www.rasch.org/rmt/rmt101r.htm
+        base_prices = np.random.rand(self.b_binning.dimensions)
+        md = min(self.params.valuations.b_sigma,
+                 self.params.valuations.a_sigma) * \
+            self.params.valuations.dist_means
+        self.__b_base_prices = base_prices + md / 2.
+        self.__a_base_prices = base_prices - md / 2.
+
+        print("bid [base prices]:", self.b_base_prices)
+        print("ask [base prices]:", self.a_base_prices)
 
     def generate(self):
-
-        bid_set = BidSetGenerator.generate(self.b_model, self.b_binning,
-                                           self.params.b_amount,
-                                           self.params.b_domain, bbasep, bsigma)
-        ask_set = BidSetGenerator.generate(self.a_model, self.a_binning,
-                                           self.params.a_amount,
-                                           self.params.a_domain, abasep, asigma)
+        bid_set = BidSetGenerator.generate(self.b_model,
+                                           self.b_binning,
+                                           self.params.bids.amount,
+                                           self.params.bids.domain,
+                                           self.b_base_prices,
+                                           self.params.valuations.b_sigma)
+        ask_set = BidSetGenerator.generate(self.a_model,
+                                           self.a_binning,
+                                           self.params.asks.amount,
+                                           self.params.asks.domain,
+                                           self.a_base_prices,
+                                           self.params.valuations.a_sigma)
 
         return AuctionSet(bid_set, ask_set)
 
@@ -63,50 +94,10 @@ class AuctionSetGenerator():
     def a_binning(self):
         return self.__a_binning
 
-
-class AuctionSetParams():
-
-    def __init__(self, b_amount, a_amount,
-                 b_model_file, a_model_file,
-                 b_binning_type, a_binning_type,
-                 b_domain, a_domain):
-        self.__b_amount = b_amount
-        self.__a_amount = a_amount
-        self.__b_model_file = b_model_file
-        self.__a_model_file = a_model_file
-        self.__b_binning_type = b_binning_type
-        self.__a_binning_type = a_binning_type
-        self.__b_domain = b_domain
-        self.__a_domain = a_domain
+    @property
+    def b_base_prices(self):
+        return self.__b_base_prices
 
     @property
-    def b_amount(self):
-        return self.__b_amount
-
-    @property
-    def a_amount(self):
-        return self.__a_amount
-
-    @property
-    def b_model_file(self):
-        return self.__b_model_file
-
-    @property
-    def a_model_file(self):
-        return self.__a_model_file
-
-    @property
-    def b_binning_type(self):
-        return self.__b_binning_type
-
-    @property
-    def a_binning_type(self):
-        return self.__a_binning_type
-
-    @property
-    def b_domain(self):
-        return self.__b_domain
-
-    @property
-    def a_domain(self):
-        return self.__a_domain
+    def a_base_prices(self):
+        return self.__a_base_prices
