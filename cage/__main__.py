@@ -17,15 +17,8 @@ asg = AuctionSetGenerator(asp)
 dataset1 = asg.generate()
 dataset2 = asg.generate()
 
-print("[D1] Asks (quantities):\n", dataset1.ask_set.quantities)
-print("[D1] Asks (values):", dataset1.ask_set.values)
-print("[D1] Bids (quantities):\n", dataset1.bid_set.quantities)
-print("[D1] Bids (values):", dataset1.bid_set.values)
-
-print("[D2] Asks (quantities):\n", dataset2.ask_set.quantities)
-print("[D2] Asks (values):", dataset2.ask_set.values)
-print("[D2] Bids (quantities):\n", dataset2.bid_set.quantities)
-print("[D2] Bids (values):", dataset2.bid_set.values)
+dataset1.save("/tmp/dataset1")
+dataset2.save("/tmp/dataset2")
 
 # todo: scale and round bid quantities to integer values
 # add some variance around base prices for the bid set

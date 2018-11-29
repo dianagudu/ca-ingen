@@ -20,6 +20,19 @@ class BidSet():
         self.__values = values
         self.__metadata = metadata
 
+    @staticmethod
+    def from_dict(dobj):
+        return BidSet(np.array(dobj["quantities"]),
+                      np.array(dobj["values"]),
+                      dobj["metadata"])
+
+    def to_dict(self):
+        return {
+            "metadata": self.metadata,
+            "values": self.values.tolist(),
+            "quantities": self.quantities.tolist()
+        }
+
     @property
     def quantities(self):
         return self.__quantities
@@ -43,7 +56,7 @@ class BidSetParams():
             model.binning.domain)
         self.__bundle_generator = BundleGenerator(model, binning)
         self.__domain_scaling = np.array(bundle_params.domain) / \
-            np.array(binning.domain)
+                                np.array(binning.domain)
         self.__amount = bundle_params.amount
         self.__cost_model = cost_model
         self.__sigma = sigma
@@ -120,6 +133,9 @@ class BidSetGenerator():
     def generate(bidset_params):
         quantities = BidSetGenerator.__gen_bundles(bidset_params)
         values = BidSetGenerator.__gen_values(quantities, bidset_params)
-        metadata = bidset_params.bundle_generator.last_seed
+        metadata = {
+            "binning_seed": bidset_params.bundle_generator.binning.random_seed,
+            "bundle_seed": bidset_params.bundle_generator.last_seed
+        }
 
         return BidSet(quantities, values, metadata)
