@@ -10,7 +10,7 @@ from .params import AuctionSetParams
 from .auctionset import AuctionSetGenerator
 from .auctionset import AuctionSet
 
-asp = AuctionSetParams.from_file("/tmp/auction_set_params")
+asp = AuctionSetParams.from_file("example_auction_set_params")
 asp.to_file("/tmp/asp2")
 
 asg = AuctionSetGenerator(asp)
@@ -23,8 +23,3 @@ dataset2.save("/tmp/dataset2")
 
 dataset3 = AuctionSet.load("/tmp/dataset1")
 dataset3.save("/tmp/dataset3")
-
-# todo: scale and round bid quantities to integer values
-# add some variance around base prices for the bid set
-# create base prices from given parameters
-# relate base prices for bids and asks through overlap given means and spreads
