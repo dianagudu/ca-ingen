@@ -5,7 +5,9 @@ from time import time
 from .bidset import BidSetGenerator
 from .bidset import BidSetParams
 from .bidset import BidSet_Type
+from .bidset import BidSet
 
+from .params import AuctionSetParams
 
 class AuctionSet():
 
@@ -26,9 +28,9 @@ class AuctionSet():
 
     @staticmethod
     def from_dict(dobj):
-        return AuctionSet(dobj["bids"].from_dict(),
-                          dobj["asks"].from_dict(),
-                          dobj["params"].from_dict())
+        return AuctionSet(BidSet.from_dict(dobj["bids"]),
+                          BidSet.from_dict(dobj["asks"]),
+                          AuctionSetParams.from_dict(dobj["params"]))
 
     def to_dict(self):
         return {
