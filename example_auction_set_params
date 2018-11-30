@@ -1,0 +1,19 @@
+bids:
+    amount: 100
+    model_file: /tmp/a
+    binning_type: !!python/object/apply:ingen.binning.Binning_Types [4]
+    binning_counts: [8, 8, 8]
+    domain: [128, 128, 128]
+asks:
+    amount: 100
+    model_file: /tmp/a
+    binning_type: !!python/object/apply:ingen.binning.Binning_Types [1]
+    binning_counts: 8
+    domain: [128, 128, 128]
+cost_model:
+    slope: [1., 1., 1.]
+    fixed: [0., 0., 1.]
+valuations:
+    dist_means: 0.1
+    a_sigma: 0.05
+    b_sigma: 0.05
