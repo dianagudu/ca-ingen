@@ -111,7 +111,7 @@ class BidSetGenerator():
         bundles = bidset_params.bundle_generator.generate(bidset_params.amount)
 
         # rescale quantities to new domain and round to integer values
-        return np.round(bundles.data * bidset_params.domain_scaling)
+        return np.round(bundles.data * bidset_params.domain_scaling).astype(int)
 
     @staticmethod
     def __gen_values(quantities, bidset_params):
