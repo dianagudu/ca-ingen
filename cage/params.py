@@ -6,16 +6,16 @@ from ingen.helper import to_dict
 
 class BundleParams():
 
-    def __init__(self, amount, model_file, domain,
+    def __init__(self, amount, model, domain,
                  binning_type, binning_counts):
         self.__amount = amount
-        self.__model_file = model_file
+        self.__model = model
         self.__domain = domain
         self.__binning_type = binning_type
         self.__binning_counts = binning_counts
 
     def to_dict(self):
-        props = ["amount", "model_file", "domain",
+        props = ["amount", "model", "domain",
                  "binning_type", "binning_counts"]
         return to_dict(self, props)
 
@@ -28,8 +28,8 @@ class BundleParams():
         return self.__amount
 
     @property
-    def model_file(self):
-        return self.__model_file
+    def model(self):
+        return self.__model
 
     @property
     def domain(self):
