@@ -1,13 +1,13 @@
 bids:
     amount: 100
     model: /tmp/a
-    binning_type: !!python/object/apply:ingen.binning.Binning_Types [4]
+    binning_type: g2pogression
     binning_counts: [8, 8, 8]
     domain: [128, 128, 128]
 asks:
     amount: 100
     model: /tmp/a
-    binning_type: !!python/object/apply:ingen.binning.Binning_Types [1]
+    binning_type: regular
     binning_counts: 8
     domain: [128, 128, 128]
 cost_model:

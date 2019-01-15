@@ -1,13 +1,40 @@
 import numpy as np
 import yaml
+import os.path
 
 from ingen.helper import to_dict
+from ingen.binning import Binning_Types
+
+from .helper import ispositivefloat
+from .helper import ispositiveint
 
 
 class BundleParams():
 
     def __init__(self, amount, model, domain,
                  binning_type, binning_counts):
+        # validate input
+        if not isinstance(amount, int) or amount <= 0:
+            raise ValueError('\'amount\' should be a positive integer.')
+        if not os.path.isfile(model):
+            raise ValueError('model file \'%s\' not found.' % model)
+        if not (isinstance(domain, np.ndarray) or isinstance(domain, list)) \
+                or not all([ispositivefloat(x) for x in domain]):
+            raise ValueError('\'domain\' should be a list of floats >= 0.')
+        try:
+            # convert type to enum
+            binning_type = Binning_Types[binning_type.upper()]
+        except KeyError:
+            alltypes = ", ".join([name.lower() for name, value in Binning_Types.__members__.items()
+                        if value.value < 90])
+            raise ValueError('\'%s\' not a valid binning_type. Allowed values: %s'
+                % (binning_type, alltypes))
+        if not isinstance(binning_counts, int) and \
+            not (isinstance(binning_counts, list) and
+                 all([ispositiveint(x) for x in binning_counts])):
+            raise ValueError(
+                '\'binning_counts\' should be an int or a list of ints > 0.')
+        #
         self.__amount = amount
         self.__model = model
         self.__domain = domain
@@ -17,7 +44,9 @@ class BundleParams():
     def to_dict(self):
         props = ["amount", "model", "domain",
                  "binning_type", "binning_counts"]
-        return to_dict(self, props)
+        dobj = to_dict(self, props)
+        dobj["binning_type"] = self.binning_type.name.lower()
+        return dobj
 
     @staticmethod
     def from_dict(dobj):
@@ -47,13 +76,22 @@ class BundleParams():
 class CostModelParams():
 
     def __init__(self, slope, fixed):
-        self.__slope = slope
-        self.__fixed = fixed
+        # validate input
+        if not (isinstance(slope, np.ndarray) or isinstance(slope, list)) \
+                or not all([ispositivefloat(x) for x in slope]):
+            raise ValueError('\'slope\' should be a list of floats >= 0.')
+        if not (isinstance(fixed, np.ndarray) or isinstance(fixed, list)) \
+                or not all([ispositivefloat(x) for x in fixed]):
+            raise ValueError('\'fixed\' should be a list of floats >= 0.')
+        if len(slope) != len(fixed):
+            raise ValueError('\'slope\' and \'fixed\' have different lengths.')
+        #
+        self.__slope = np.array(slope)
+        self.__fixed = np.array(fixed)
 
     @staticmethod
     def from_dict(dobj):
-        return CostModelParams(np.array(dobj["slope"]),
-                               np.array(dobj["fixed"]))
+        return CostModelParams(dobj["slope"], dobj["fixed"])
 
     def to_dict(self):
         return {
@@ -73,6 +111,14 @@ class CostModelParams():
 class ValuationParams():
 
     def __init__(self, dist_means, b_sigma, a_sigma):
+        # validate input
+        if not isinstance(dist_means, float) or dist_means < 0 or dist_means > 1:
+            raise ValueError('\'dist_means\' should be a float in [0,1].')
+        if not isinstance(b_sigma, float) or b_sigma < 0 or b_sigma > 1:
+            raise ValueError('\'b_sigma\' should be a float in [0,1].')
+        if not isinstance(a_sigma, float) or a_sigma < 0 or a_sigma > 1:
+            raise ValueError('\'a_sigma\' should be a float in [0,1].')
+        #
         self.__dist_means = dist_means
         self.__b_sigma = b_sigma
         self.__a_sigma = a_sigma

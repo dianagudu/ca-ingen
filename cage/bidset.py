@@ -49,7 +49,11 @@ class BidSet():
 class BidSetParams():
 
     def __init__(self, bundle_params, cost_model, sigma):
-        model = Model.from_file(bundle_params.model)
+        try:
+            model = Model.from_file(bundle_params.model)
+        except Exception:
+            # raise this if file exists but does not contan a model
+            raise ValueError('malformed model file \'%s\'.' % bundle_params.model)
         binning = BinningGenerator.generate(
             bundle_params.binning_type,
             bundle_params.binning_counts,
