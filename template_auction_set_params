@@ -1,0 +1,19 @@
+bids:
+    amount: ${BIDS_N}
+    model: ${BIDS_MODEL}
+    binning_type: ${BIDS_BINNING_TYPE}
+    binning_counts: ${BIDS_BINNING_COUNTS}
+    domain: ${BIDS_DOMAIN}
+asks:
+    amount: ${ASKS_N}
+    model: ${ASKS_MODEL}
+    binning_type: ${ASKS_BINNING_TYPE}
+    binning_counts: ${ASKS_BINNING_COUNTS}
+    domain: ${ASKS_DOMAIN}
+cost_model:
+    slope: ${SLOPE}
+    fixed: ${FIXED}
+valuations:
+    dist_means: ${DIST_MEANS}
+    a_sigma: ${A_SIGMA}
+    b_sigma: ${B_SIGMA}
