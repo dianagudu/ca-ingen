@@ -1,5 +1,6 @@
 import numpy as np
 from enum import Enum
+import os.path
 
 from ingen.bundles import BundleGenerator
 from ingen.model import Model
@@ -49,6 +50,8 @@ class BidSet():
 class BidSetParams():
 
     def __init__(self, bundle_params, cost_model, sigma):
+        if not os.path.isfile(bundle_params.model):
+            raise ValueError('model file \'%s\' not found.' % bundle_params.model)
         try:
             model = Model.from_file(bundle_params.model)
         except Exception:

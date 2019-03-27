@@ -1,6 +1,5 @@
 import numpy as np
 import yaml
-import os.path
 
 from ingen.helper import to_dict
 from ingen.binning import Binning_Types
@@ -16,8 +15,6 @@ class BundleParams():
         # validate input
         if not isinstance(amount, int) or amount <= 0:
             raise ValueError('\'amount\' should be a positive integer.')
-        if not os.path.isfile(model):
-            raise ValueError('model file \'%s\' not found.' % model)
         if not (isinstance(domain, np.ndarray) or isinstance(domain, list)) \
                 or not all([ispositivefloat(x) for x in domain]):
             raise ValueError('\'domain\' should be a list of floats >= 0.')
