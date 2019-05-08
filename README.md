@@ -3,7 +3,10 @@ Combinatorial Auctions Input Generator with realistic bundles for cloud resource
 
 ### prerequisites
 
-* Cloud bundle input generator ingen: https://ptrxyz.de:3000/ptrxyz/inputgen
+* Cloud bundle input generator ingen:
+
+    https://github.com/dianagudu/inputgen
+
 * All libs in requirements.txt
 
 ### usage
